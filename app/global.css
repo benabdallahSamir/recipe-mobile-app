@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+    /* Default theme (purple) */
+    --color-primary: #6a1b9a;
+    --color-background: #f3e5f5;
+    --color-text: #4a148c;
+    --color-border: #d1c4e9;
+    --color-white: #ffffff;
+    --color-textLight: #ba68c8;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+/* 
+.theme-coffee {
+    --color-primary: #8b593e;
+    --color-background: #fff8f3;
+    --color-text: #4a3428;
+    --color-border: #e5d3b7;
+    --color-white: #ffffff;
+    --color-textLight: #9a8478;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+
+.theme-forest {
+    --color-primary: #2e7d32;
+    --color-background: #e8f5e9;
+    --color-text: #1b5e20;
+    --color-border: #c8e6c9;
+    --color-white: #ffffff;
+    --color-textLight: #66bb6a;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+
+.theme-purple {
+    --color-primary: #6a1b9a;
+    --color-background: #f3e5f5;
+    --color-text: #4a148c;
+    --color-border: #d1c4e9;
+    --color-white: #ffffff;
+    --color-textLight: #ba68c8;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+
+.theme-ocean {
+    --color-primary: #0277bd;
+    --color-background: #e1f5fe;
+    --color-text: #01579b;
+    --color-border: #b3e5fc;
+    --color-white: #ffffff;
+    --color-textLight: #4fc3f7;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+
+.theme-sunset {
+    --color-primary: #ff7e67;
+    --color-background: #fff3f0;
+    --color-text: #2c1810;
+    --color-border: #ffd5cc;
+    --color-white: #ffffff;
+    --color-textLight: #ffa494;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+
+.theme-mint {
+    --color-primary: #00b5b5;
+    --color-background: #e8f6f6;
+    --color-text: #006666;
+    --color-border: #b2e8e8;
+    --color-white: #ffffff;
+    --color-textLight: #66d9d9;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+
+.theme-midnight {
+    --color-primary: #2c3e50;
+    --color-background: #f4f6f7;
+    --color-text: #1a2530;
+    --color-border: #d5d8dc;
+    --color-white: #ffffff;
+    --color-textLight: #7f8c8d;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+}
+
+.theme-roseGold {
+    --color-primary: #e0bfb8;
+    --color-background: #fdf6f5;
+    --color-text: #4a3b38;
+    --color-border: #f2d9d5;
+    --color-white: #ffffff;
+    --color-textLight: #c9a9a6;
+    --color-card: #ffffff;
+    --color-shadow: #000000;
+} */

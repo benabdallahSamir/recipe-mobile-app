@@ -2,61 +2,76 @@ import "@/app/global.css";
 import { useSignUp } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import tw from "twrnc";
 import mainImg from "../../assets/images/i2.png"; // Adjust the path as necessary
 export default function SignUpScreen() {
-  const { isLoaded, signUp, setActive } = useSignUp();
+  const { isLoaded, signUp } = useSignUp();
   const router = useRouter();
 
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [loadingState, setLoadingState] = React.useState(false);
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
 
-  const onSignUpPress = async () => {
-    if (!isLoaded) return;
+  const handleSignUp = async () => {
+    if (!emailAddress || !password)
+      return Alert.alert("Error", "Please fill in all fields");
+    if (password.length < 6)
+      return Alert.alert("Error", "Password must be at least 6 characters");
+    // if (!isLoaded) return;
+
+    setLoadingState(true);
 
     try {
-      await signUp.create({
-        emailAddress,
-        password,
-      });
+      if (signUp) await signUp.create({ emailAddress, password });
+      else {
+        Alert.alert("Error", "SignUp object not available");
+        return;
+      }
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
       setPendingVerification(true);
     } catch (err) {
-      console.error(JSON.stringify(err, null, 2));
+      Alert.alert(
+        "Error",
+        err.errors?.[0]?.message || "Failed to create account"
+      );
+      console.error(err);
+    } finally {
+      setLoadingState(false);
     }
   };
 
-  // Handle submission of verification form
   const onVerifyPress = async () => {
     if (!isLoaded) return;
 
     try {
-      // Use the code the user provided to attempt verification
       const signUpAttempt = await signUp.attemptEmailAddressVerification({
         code,
       });
 
-      // If verification was completed, set the session to active
-      // and redirect the user
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
         router.replace("/");
       } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      console.error(err);
     }
   };
 
@@ -75,10 +90,13 @@ export default function SignUpScreen() {
       </>
     );
   }
-
   return (
     <View style={tw`h-full p-4 bg-white rounded-xl`}>
-      <>
+      <KeyboardAvoidingView
+        style={tw`flex-1`}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+      >
         <Image
           source={mainImg}
           contentFit="contain"
@@ -88,6 +106,7 @@ export default function SignUpScreen() {
           Create account
         </Text>
         <TextInput
+          keyboardType="email-address"
           autoCapitalize="none"
           value={emailAddress}
           placeholder="Enter email"
@@ -99,26 +118,42 @@ export default function SignUpScreen() {
             value={password}
             placeholder="Enter password"
             style={tw`p-2 rounded p-[10] w-4/5 `}
-            secureTextEntry={true}
+            secureTextEntry={!showPassword}
             onChangeText={(password) => setPassword(password)}
           />
-          <TouchableOpacity style={tw`p-2 w-1/5 justify-center items-center`}>
-            <Ionicons name="eye-off" size={24} color="gray" />
+          <TouchableOpacity
+            style={tw`p-2 w-1/5 justify-center items-center`}
+            onPress={() => setShowPassword((curr) => !curr)}
+          >
+            <Ionicons
+              name={showPassword ? "eye-outline" : "eye-off-outline"}
+              size={24}
+              color="gray"
+            />
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={onSignUpPress}
-          style={tw`bg-blue-500 p-3 rounded mb-4`}
+          onPress={handleSignUp}
+          disabled={loadingState}
+          style={tw`bg-blue-500 p-3 rounded mb-4 ${
+            loadingState && "opacity-70"
+          }`}
         >
-          <Text style={tw`text-white text-center text-2xl`}>Sign up</Text>
+          <Text style={tw`text-white text-center text-2xl`}>
+            {loadingState ? "loading ..." : " Sign up"}
+          </Text>
         </TouchableOpacity>
         <View style={tw`flex-row justify-center items-center`}>
           <Text style={tw`text-gray-500 mr-[3]`}>Already have an account?</Text>
-          <Link href="/sign-in">
+          <TouchableOpacity
+            onPress={() => {
+              router.back();
+            }}
+          >
             <Text style={tw`text-blue-500`}>Sign in</Text>
-          </Link>
+          </TouchableOpacity>
         </View>
-      </>
+      </KeyboardAvoidingView>
     </View>
   );
 }

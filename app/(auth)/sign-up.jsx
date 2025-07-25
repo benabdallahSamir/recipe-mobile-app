@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import tw from "twrnc";
 import mainImg from "../../assets/images/i2.png"; // Adjust the path as necessary
+import VerifyEmail from "../com/VerifyEmail";
 export default function SignUpScreen() {
   const { isLoaded, signUp } = useSignUp();
   const router = useRouter();
@@ -24,7 +25,6 @@ export default function SignUpScreen() {
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [pendingVerification, setPendingVerification] = React.useState(false);
-  const [code, setCode] = React.useState("");
 
   const handleSignUp = async () => {
     if (!emailAddress || !password)
@@ -56,40 +56,8 @@ export default function SignUpScreen() {
     }
   };
 
-  const onVerifyPress = async () => {
-    if (!isLoaded) return;
+  if (pendingVerification) return <VerifyEmail email={emailAddress} />;
 
-    try {
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({
-        code,
-      });
-
-      if (signUpAttempt.status === "complete") {
-        await setActive({ session: signUpAttempt.createdSessionId });
-        router.replace("/");
-      } else {
-        console.error(JSON.stringify(signUpAttempt, null, 2));
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  if (pendingVerification) {
-    return (
-      <>
-        <Text>Verify your email</Text>
-        <TextInput
-          value={code}
-          placeholder="Enter your verification code"
-          onChangeText={(code) => setCode(code)}
-        />
-        <TouchableOpacity onPress={onVerifyPress}>
-          <Text>Verify</Text>
-        </TouchableOpacity>
-      </>
-    );
-  }
   return (
     <View style={tw`h-full p-4 bg-white rounded-xl`}>
       <KeyboardAvoidingView
